@@ -27,7 +27,7 @@ export function TransactionList({
   if (transactions.length === 0) {
     return (
       <OnboardingCard
-        ctaHref="#add-transaction"
+        ctaHref="#quick-add-transaction"
         ctaLabel="Add First Transaction"
         description="Record your first income or expense to turn the dashboard into a useful picture of your financial condition. FiJo will update income, expenses, and balance as soon as transactions are added."
         eyebrow="Next step"

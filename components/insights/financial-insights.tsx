@@ -52,8 +52,8 @@ export function FinancialInsights({ insights }: FinancialInsightsProps) {
   ];
 
   return (
-    <section className="mt-8">
-      <div className="mb-5">
+    <section className="mt-6">
+      <div className="mb-4">
         <h2 className="text-xl font-semibold tracking-tight">
           FiJo Insights
         </h2>

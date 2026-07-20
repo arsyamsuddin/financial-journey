@@ -1,3 +1,5 @@
+"use client";
+
 import { CategoryForm } from "@/components/categories/category-form";
 import { CategoryList } from "@/components/categories/category-list";
 import { OnboardingCard } from "@/components/dashboard/onboarding-card";
@@ -9,8 +11,8 @@ type CategoryManagementProps = {
 
 export function CategoryManagement({ categories }: CategoryManagementProps) {
   return (
-    <section id="categories" className="mt-8">
-      <div className="mb-5">
+    <section className="mt-4">
+      <div className="mb-4">
         <h2 className="text-xl font-semibold tracking-tight">Categories</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Manage income and expense categories used by transactions.

@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { LogoutButton } from "@/components/auth/logout-button";
-import { CategoryManagement } from "@/components/categories/category-management";
+import { CollapsibleCategoryManagement } from "@/components/categories/collapsible-category-management";
 import { FinancialInsights } from "@/components/insights/financial-insights";
+import { QuickAddTransaction } from "@/components/transactions/quick-add-transaction";
 import { SummaryCards } from "@/components/transactions/summary-cards";
-import { TransactionForm } from "@/components/transactions/transaction-form";
 import { TransactionList } from "@/components/transactions/transaction-list";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
@@ -113,46 +113,53 @@ export default async function DashboardPage() {
         </nav>
       </header>
 
-      <section className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
-        <p className="text-sm font-medium text-emerald-700">Dashboard</p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-          Welcome back.
-        </h1>
-        <p className="mt-3 max-w-2xl text-muted-foreground">
-          Track your income, expenses, and current balance from your recorded
-          transactions.
-        </p>
+      <section className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <section>
+          <p className="text-sm font-medium text-emerald-700">Dashboard</p>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+            Welcome to FiJo
+          </h1>
+          <p className="mt-2 max-w-2xl text-muted-foreground">
+            Financial awareness before financial advice.
+          </p>
+        </section>
 
-        <div className="mt-8">
+        <section className="mt-6">
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold tracking-tight">
+              Financial Snapshot
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              See your current financial position at a glance.
+            </p>
+          </div>
           <SummaryCards totals={totals} />
-        </div>
-
-        <FinancialInsights insights={insights} />
-
-        <CategoryManagement categories={categories} />
+        </section>
 
         {categories.length > 0 ? (
-          <section className="mt-8">
-            <div className="mb-5">
-              <h2 className="text-xl font-semibold tracking-tight">
-                Transactions
-              </h2>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Record income and expenses as they happen.
-              </p>
-            </div>
+          <>
+            <QuickAddTransaction categories={categories} />
 
-            <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-              <div id="add-transaction">
-                <TransactionForm categories={categories} />
+            <section className="mt-6">
+              <div className="mb-4">
+                <h2 className="text-xl font-semibold tracking-tight">
+                  Recent Transactions
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Review your latest recorded activity.
+                </p>
               </div>
               <TransactionList
                 categories={categories}
                 transactions={transactions}
               />
-            </div>
-          </section>
+            </section>
+          </>
         ) : null}
+
+        <FinancialInsights insights={insights} />
+
+        <CollapsibleCategoryManagement categories={categories} />
       </section>
     </main>
   );
