@@ -39,8 +39,13 @@ export function AuthForm({
   return (
     <div className="w-full max-w-sm rounded-lg border border-border bg-card p-6 shadow-sm">
       <div className="mb-6">
-        <Link href="/" className="text-sm font-semibold tracking-tight">
-          Financial Journey
+        <Link href="/" className="inline-block">
+          <span className="block text-sm font-semibold leading-none tracking-tight">
+            FiJo
+          </span>
+          <span className="mt-1 block text-xs leading-none text-muted-foreground">
+            Financial Journey
+          </span>
         </Link>
         <h1 className="mt-6 text-2xl font-semibold tracking-tight">{title}</h1>
       </div>

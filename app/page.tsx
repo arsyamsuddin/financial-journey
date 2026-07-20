@@ -33,9 +33,14 @@ export default function HomePage() {
         <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="min-w-0 text-base font-semibold tracking-tight"
+            className="min-w-0"
           >
-            Financial Journey
+            <span className="block text-base font-semibold leading-none tracking-tight">
+              FiJo
+            </span>
+            <span className="mt-1 hidden text-xs leading-none text-muted-foreground min-[420px]:block">
+              Financial Journey
+            </span>
           </Link>
 
           <div className="hidden items-center gap-8 text-sm text-muted-foreground sm:flex">
@@ -65,14 +70,18 @@ export default function HomePage() {
       >
         <div className="flex flex-col justify-center">
           <p className="mb-4 text-sm font-medium text-emerald-700">
-            Financial awareness, made simple.
+            Financial Journey
           </p>
           <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
-            Understand your financial condition.
+            FiJo
           </h1>
+          <p className="mt-4 max-w-2xl text-2xl font-medium tracking-tight text-balance sm:text-3xl">
+            Financial awareness before financial advice.
+          </p>
           <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-            Build financial awareness through simple recording and meaningful
-            insights.
+            FiJo (Financial Journey) helps users build financial awareness by
+            understanding income, expenses, and spending patterns before making
+            financial decisions.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -137,8 +146,11 @@ export default function HomePage() {
       </section>
 
       <footer className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-        <p>Financial Journey</p>
-        <p>Simple records. Clearer decisions.</p>
+        <p>
+          <span className="font-medium text-foreground">FiJo</span> · Financial
+          Journey
+        </p>
+        <p>Financial awareness before financial advice.</p>
       </footer>
     </main>
   );

@@ -13,9 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Financial Journey",
-  description:
-    "Build financial awareness through simple recording and meaningful insights.",
+  title: "FiJo • Financial Journey",
+  description: "Financial awareness before financial advice.",
 };
 
 export default function RootLayout({

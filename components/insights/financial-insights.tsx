@@ -55,7 +55,7 @@ export function FinancialInsights({ insights }: FinancialInsightsProps) {
     <section className="mt-8">
       <div className="mb-5">
         <h2 className="text-xl font-semibold tracking-tight">
-          Financial Insights
+          FiJo Insights
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           A quick read on your recorded transaction patterns.

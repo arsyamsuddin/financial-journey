@@ -101,9 +101,14 @@ export default async function DashboardPage() {
     <main className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border/70">
         <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-          <p className="min-w-0 text-base font-semibold tracking-tight">
-            Financial Journey
-          </p>
+          <div className="min-w-0">
+            <p className="text-base font-semibold leading-none tracking-tight">
+              FiJo
+            </p>
+            <p className="mt-1 text-xs leading-none text-muted-foreground">
+              Financial Journey
+            </p>
+          </div>
           <LogoutButton />
         </nav>
       </header>
