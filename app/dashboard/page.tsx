@@ -2,12 +2,14 @@ import { redirect } from "next/navigation";
 
 import { LogoutButton } from "@/components/auth/logout-button";
 import { CategoryManagement } from "@/components/categories/category-management";
+import { FinancialInsights } from "@/components/insights/financial-insights";
 import { SummaryCards } from "@/components/transactions/summary-cards";
 import { TransactionForm } from "@/components/transactions/transaction-form";
 import { TransactionList } from "@/components/transactions/transaction-list";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   calculateDashboardTotals,
+  calculateFinancialInsights,
   type Category,
   type Transaction,
 } from "@/lib/transactions";
@@ -93,6 +95,7 @@ export default async function DashboardPage() {
     .map(normalizeTransaction)
     .filter((transaction): transaction is Transaction => Boolean(transaction));
   const totals = calculateDashboardTotals(transactions);
+  const insights = calculateFinancialInsights(transactions);
 
   return (
     <main className="min-h-screen bg-background text-foreground">
@@ -118,6 +121,8 @@ export default async function DashboardPage() {
         <div className="mt-8">
           <SummaryCards totals={totals} />
         </div>
+
+        <FinancialInsights insights={insights} />
 
         <CategoryManagement categories={categories} />
 
