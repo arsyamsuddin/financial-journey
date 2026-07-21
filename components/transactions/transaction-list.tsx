@@ -51,7 +51,7 @@ export function TransactionList({
       <div className="space-y-2">
         {transactions.map((transaction) => {
           const isEditing = editingId === transaction.id;
-          const isIncome = transaction.category.type === "income";
+          const isIncome = transaction.categoryKind === "income";
 
           return (
             <article key={transaction.id} className="rounded-2xl p-3 transition-colors hover:bg-slate-50/80">
@@ -70,13 +70,13 @@ export function TransactionList({
                 <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
                   <div className="flex min-w-0 gap-3">
                     <CategoryIcon
-                      color={transaction.category.color}
-                      icon={transaction.category.icon}
+                      color={transaction.categoryColor}
+                      icon={transaction.categoryIcon}
                     />
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className="min-w-0 break-words font-medium">
-                          {transaction.category.name}
+                          {transaction.categoryName}
                         </h3>
                         <span
                           className={`rounded-full px-2 py-0.5 text-xs font-medium ${

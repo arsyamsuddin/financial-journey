@@ -68,7 +68,7 @@ export function TransactionTimeline({
             <div className="space-y-3">
               {group.transactions.map((transaction) => {
                 const isEditing = editingId === transaction.id;
-                const isIncome = transaction.category.type === "income";
+                const isIncome = transaction.categoryKind === "income";
 
                 return (
                   <article
@@ -90,13 +90,13 @@ export function TransactionTimeline({
                       <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
                         <div className="flex min-w-0 gap-3">
                           <CategoryIcon
-                            color={transaction.category.color}
-                            icon={transaction.category.icon}
+                            color={transaction.categoryColor}
+                            icon={transaction.categoryIcon}
                           />
                           <div className="min-w-0 flex-1">
                             <div className="flex flex-wrap items-center gap-2">
                               <h3 className="break-words text-base font-semibold">
-                                {transaction.category.name}
+                                {transaction.categoryName}
                               </h3>
                               <span
                                 className={`rounded-full px-2.5 py-1 text-xs font-medium ${

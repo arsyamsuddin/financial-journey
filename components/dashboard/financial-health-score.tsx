@@ -90,7 +90,7 @@ function getMonthlyFlow(transactions: Transaction[]) {
       continue;
     }
 
-    if (transaction.category.type === "income") {
+    if (transaction.categoryKind === "income") {
       income += transaction.amount;
     } else {
       expense += transaction.amount;

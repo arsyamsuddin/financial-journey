@@ -141,15 +141,15 @@ function getCategoryTotals(
   const totals = new Map<string, CategoryTotal>();
 
   for (const transaction of transactions) {
-    if (transaction.category.type !== type) {
+    if (transaction.categoryKind !== type) {
       continue;
     }
 
     const current = totals.get(transaction.categoryId) ?? {
-      color: transaction.category.color,
-      icon: transaction.category.icon,
+      color: transaction.categoryColor,
+      icon: transaction.categoryIcon,
       id: transaction.categoryId,
-      name: transaction.category.name,
+      name: transaction.categoryName,
       total: 0,
     };
 

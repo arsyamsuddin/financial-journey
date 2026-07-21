@@ -78,7 +78,7 @@ function getLastSixMonths(transactions: Transaction[]) {
         transactionDate.getMonth() === bucket.month &&
         transactionDate.getFullYear() === bucket.year
       ) {
-        if (transaction.category.type === "income") {
+        if (transaction.categoryKind === "income") {
           bucket.income += transaction.amount;
         } else {
           bucket.expense += transaction.amount;

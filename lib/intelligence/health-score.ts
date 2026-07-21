@@ -39,12 +39,12 @@ function calculateMonthlySnapshot(
   for (const transaction of transactions) {
     const date = new Date(`${transaction.transactionDate}T00:00:00`);
     const signedAmount =
-      transaction.category.type === "income"
+      transaction.categoryKind === "income"
         ? transaction.amount
         : -transaction.amount;
 
     if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-      if (transaction.category.type === "income") {
+      if (transaction.categoryKind === "income") {
         income += transaction.amount;
       } else {
         expense += transaction.amount;

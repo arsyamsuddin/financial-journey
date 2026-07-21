@@ -2,6 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 
+import {
+  findCategoryById,
+  isLeafCategory,
+  type CanonicalCategory,
+} from "@/lib/catalog";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import type { CategoryType } from "@/lib/transactions";
 
@@ -72,21 +77,51 @@ async function getAuthenticatedUserId() {
   return { supabase, userId: user?.id };
 }
 
-async function categoryBelongsToUser(
-  categoryId: string,
-  type: CategoryType,
-  userId: string
-) {
-  const supabase = await createSupabaseServerClient();
+function getValidCanonicalCategory(categoryId: string, type: CategoryType) {
+  const category = findCategoryById(categoryId);
+
+  if (!category || category.kind !== type || !isLeafCategory(category)) {
+    return null;
+  }
+
+  return category;
+}
+
+async function getStorageCategoryId({
+  category,
+  supabase,
+  userId,
+}: {
+  category: CanonicalCategory;
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>;
+  userId: string;
+}) {
   const { data, error } = await supabase
     .from("categories")
+    .upsert(
+      {
+        color: category.color,
+        icon: category.icon,
+        name: category.name,
+        type: category.kind,
+        user_id: userId,
+      },
+      { onConflict: "user_id,type,name" }
+    )
     .select("id")
-    .eq("id", categoryId)
-    .eq("user_id", userId)
-    .eq("type", type)
     .single();
 
-  return !error && Boolean(data);
+  if (error || !data) {
+    return { error: error?.message ?? "Unable to prepare category." };
+  }
+
+  return { id: data.id as string };
+}
+
+function revalidateFinancialRoutes() {
+  revalidatePath("/dashboard");
+  revalidatePath("/transactions");
+  revalidatePath("/insights");
 }
 
 export async function createTransaction(
@@ -105,19 +140,28 @@ export async function createTransaction(
     return { message: "You must be signed in." };
   }
 
-  const validCategory = await categoryBelongsToUser(
+  const canonicalCategory = getValidCanonicalCategory(
     parsed.data.categoryId,
-    parsed.data.type,
-    userId
+    parsed.data.type
   );
 
-  if (!validCategory) {
-    return { message: "Choose one of your categories." };
+  if (!canonicalCategory) {
+    return { message: "Choose a valid category." };
+  }
+
+  const storageCategory = await getStorageCategoryId({
+    category: canonicalCategory,
+    supabase,
+    userId,
+  });
+
+  if ("error" in storageCategory) {
+    return { message: storageCategory.error };
   }
 
   const { error } = await supabase.from("transactions").insert({
     user_id: userId,
-    category_id: parsed.data.categoryId,
+    category_id: storageCategory.id,
     amount: parsed.data.amount,
     currency: parsed.data.currency,
     description: parsed.data.description,
@@ -128,7 +172,7 @@ export async function createTransaction(
     return { message: error.message };
   }
 
-  revalidatePath("/dashboard");
+  revalidateFinancialRoutes();
   return { message: "Transaction created.", success: true };
 }
 
@@ -153,20 +197,29 @@ export async function updateTransaction(
     return { message: "You must be signed in." };
   }
 
-  const validCategory = await categoryBelongsToUser(
+  const canonicalCategory = getValidCanonicalCategory(
     parsed.data.categoryId,
-    parsed.data.type,
-    userId
+    parsed.data.type
   );
 
-  if (!validCategory) {
-    return { message: "Choose one of your categories." };
+  if (!canonicalCategory) {
+    return { message: "Choose a valid category." };
+  }
+
+  const storageCategory = await getStorageCategoryId({
+    category: canonicalCategory,
+    supabase,
+    userId,
+  });
+
+  if ("error" in storageCategory) {
+    return { message: storageCategory.error };
   }
 
   const { error } = await supabase
     .from("transactions")
     .update({
-      category_id: parsed.data.categoryId,
+      category_id: storageCategory.id,
       amount: parsed.data.amount,
       currency: parsed.data.currency,
       description: parsed.data.description,
@@ -179,7 +232,7 @@ export async function updateTransaction(
     return { message: error.message };
   }
 
-  revalidatePath("/dashboard");
+  revalidateFinancialRoutes();
   return { message: "Transaction updated.", success: true };
 }
 
@@ -198,5 +251,5 @@ export async function deleteTransaction(formData: FormData) {
 
   await supabase.from("transactions").delete().eq("id", id).eq("user_id", userId);
 
-  revalidatePath("/dashboard");
+  revalidateFinancialRoutes();
 }

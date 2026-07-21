@@ -7,11 +7,11 @@ import {
   updateTransaction,
   type TransactionFormState,
 } from "@/app/transactions/actions";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { getLeafCategories } from "@/lib/catalog";
 import type { Category, CategoryType, Transaction } from "@/lib/transactions";
 
 type TransactionFormProps = {
@@ -26,15 +26,13 @@ type TransactionFormProps = {
 const initialState: TransactionFormState = {};
 
 export function TransactionForm({
-  categories,
   initialType: preferredType,
   mode = "create",
   onCancel,
   onSuccess,
   transaction,
 }: TransactionFormProps) {
-  const initialType =
-    transaction?.category.type ?? preferredType ?? categories[0]?.type ?? "expense";
+  const initialType = transaction?.categoryKind ?? preferredType ?? "expense";
   const [type, setType] = useState<CategoryType>(initialType);
   const action = mode === "edit" ? updateTransaction : createTransaction;
   const [state, formAction, pending] = useActionState(action, initialState);
@@ -46,31 +44,14 @@ export function TransactionForm({
   }, [onSuccess, state.message, state.success]);
 
   const filteredCategories = useMemo(
-    () => categories.filter((category) => category.type === type),
-    [categories, type]
+    () => getLeafCategories(type),
+    [type]
   );
 
   const defaultCategoryId =
-    transaction?.categoryId ??
+    (transaction?.categoryKind === type ? transaction.categoryId : undefined) ??
     filteredCategories[0]?.id ??
     "";
-
-  if (categories.length === 0) {
-    return (
-      <div className="min-w-0 rounded-2xl bg-white/80 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/5">
-        <h2 className="text-base font-semibold">Add Transaction</h2>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Create at least one category before recording transactions.
-        </p>
-        <a
-          href="#categories"
-          className={cn(buttonVariants(), "mt-5 h-10 w-full sm:w-auto")}
-        >
-          Create First Category
-        </a>
-      </div>
-    );
-  }
 
   return (
     <form

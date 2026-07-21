@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { resolveCanonicalCategory } from "@/lib/catalog";
 import {
   calculateDashboardTotals,
   calculateFinancialInsights,
@@ -29,16 +30,34 @@ function normalizeTransaction(row: TransactionRow): Transaction | null {
     return null;
   }
 
+  const canonicalCategory = resolveCanonicalCategory({
+    id: row.category_id,
+    kind: category.type,
+    name: category.name,
+  });
+  const displayCategory = {
+    color: canonicalCategory.color,
+    icon: canonicalCategory.icon,
+    id: canonicalCategory.id,
+    name: canonicalCategory.name,
+    type: canonicalCategory.kind,
+  };
+
   return {
     id: row.id,
-    categoryId: row.category_id,
+    categoryId: canonicalCategory.id,
+    categoryKind: canonicalCategory.kind,
+    categoryName: canonicalCategory.name,
+    categoryIcon: canonicalCategory.icon,
+    categoryColor: canonicalCategory.color,
+    storageCategoryId: row.category_id,
     amount: Number(row.amount),
     currency: row.currency,
     description: row.description,
     transactionDate: row.transaction_date,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
-    category,
+    category: displayCategory,
   };
 }
 

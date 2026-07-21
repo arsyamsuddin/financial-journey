@@ -8,6 +8,7 @@ import { TransactionTimeline } from "@/components/transactions/transaction-timel
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { getLeafCategories } from "@/lib/catalog";
 import type { Category, Transaction } from "@/lib/transactions";
 
 type TransactionsWorkspaceProps = {
@@ -29,7 +30,7 @@ export function TransactionsWorkspace({
     () =>
       transactions.filter((transaction) => {
         const searchable = [
-          transaction.category.name,
+          transaction.categoryName,
           transaction.description ?? "",
           transaction.currency,
           String(transaction.amount),
@@ -109,7 +110,7 @@ export function TransactionsWorkspace({
             onChange={setCategoryId}
             options={[
               { label: "All Categories", value: "all" },
-              ...categories.map((category) => ({
+              ...getLeafCategories().map((category) => ({
                 label: category.name,
                 value: category.id,
               })),

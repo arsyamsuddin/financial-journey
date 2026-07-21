@@ -24,10 +24,9 @@ type QuickActionPanelProps = {
 
 type ActionMode = CategoryType | "transfer" | null;
 
-export function QuickActionPanel({ categories }: QuickActionPanelProps) {
+export function QuickActionPanel({ categories: _categories }: QuickActionPanelProps) {
   const [mode, setMode] = useState<ActionMode>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const hasCategories = categories.length > 0;
 
   return (
     <section id="quick-add-transaction" className="space-y-4">
@@ -74,26 +73,12 @@ export function QuickActionPanel({ categories }: QuickActionPanelProps) {
         </p>
       ) : null}
 
-      {!hasCategories ? (
-        <div className="rounded-3xl bg-white/80 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/5">
-          <p className="text-base font-semibold">Create categories first</p>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Categories turn each transaction into useful awareness. Add one
-            income or expense category before recording activity.
-          </p>
-          <a
-            href="#categories"
-            className={cn(buttonVariants(), "mt-5 h-10 w-full sm:w-auto")}
-          >
-            Create First Category
-          </a>
-        </div>
-      ) : mode === "transfer" ? (
+      {mode === "transfer" ? (
         <TransferForm />
       ) : mode ? (
         <TransactionForm
           key={mode}
-          categories={categories}
+          categories={_categories}
           initialType={mode}
           onSuccess={(message) => {
             setSuccessMessage(message ?? "Transaction created.");

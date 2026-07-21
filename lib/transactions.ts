@@ -1,4 +1,6 @@
-export type CategoryType = "income" | "expense";
+import type { CatalogKind } from "@/lib/catalog";
+
+export type CategoryType = CatalogKind;
 
 export type Category = {
   id: string;
@@ -11,6 +13,11 @@ export type Category = {
 export type Transaction = {
   id: string;
   categoryId: string;
+  categoryKind: CategoryType;
+  categoryName: string;
+  categoryIcon: string | null;
+  categoryColor: string | null;
+  storageCategoryId: string;
   amount: number;
   currency: string;
   description: string | null;
@@ -48,7 +55,7 @@ export function calculateDashboardTotals(
 
   return transactions.reduce(
     (totals, transaction) => {
-      if (transaction.category.type === "income") {
+      if (transaction.categoryKind === "income") {
         totals.income += transaction.amount;
       } else {
         totals.expense += transaction.amount;
@@ -85,16 +92,16 @@ export function calculateFinancialInsights(
     }
 
     const categoryTotals =
-      transaction.category.type === "income" ? incomeTotals : expenseTotals;
+      transaction.categoryKind === "income" ? incomeTotals : expenseTotals;
     const current = categoryTotals.get(transaction.categoryId) ?? {
-      name: transaction.category.name,
+      name: transaction.categoryName,
       total: 0,
     };
 
     current.total += transaction.amount;
     categoryTotals.set(transaction.categoryId, current);
 
-    if (transaction.category.type === "expense") {
+    if (transaction.categoryKind === "expense") {
       expenseTransactionCount += 1;
       expenseTransactionTotal += transaction.amount;
     }
