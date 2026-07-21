@@ -5,10 +5,15 @@ import { DashboardCommunityPreview } from "@/components/dashboard/dashboard-comm
 import { DashboardInsightPreview } from "@/components/dashboard/dashboard-insight-preview";
 import { FinancialHero } from "@/components/dashboard/financial-hero";
 import { getAuthenticatedFinancialData } from "@/lib/dashboard-data";
+import { generateFinancialIntelligence } from "@/lib/intelligence/recommendation-engine";
 
 export default async function DashboardPage() {
-  const { insights, totals, transactions } =
+  const { totals, transactions } =
     await getAuthenticatedFinancialData();
+  const intelligence = generateFinancialIntelligence({
+    totals,
+    transactions,
+  });
 
   return (
     <AppShell>
@@ -25,7 +30,11 @@ export default async function DashboardPage() {
       </div>
 
       <section>
-        <FinancialHero totals={totals} transactions={transactions} />
+        <FinancialHero
+          intelligence={intelligence}
+          totals={totals}
+          transactions={transactions}
+        />
       </section>
 
       <section>
@@ -33,7 +42,7 @@ export default async function DashboardPage() {
       </section>
 
       <section className="grid gap-6 lg:grid-cols-2">
-        <DashboardInsightPreview insights={insights} />
+          <DashboardInsightPreview intelligence={intelligence} />
         <DashboardCommunityPreview />
       </section>
     </AppShell>

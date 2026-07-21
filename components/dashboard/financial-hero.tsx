@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
+import type { FinancialIntelligence } from "@/lib/intelligence/types";
 import {
   formatCurrency,
   type DashboardTotals,
@@ -14,14 +15,18 @@ import {
 } from "@/lib/transactions";
 
 type FinancialHeroProps = {
+  intelligence: FinancialIntelligence;
   totals: DashboardTotals;
   transactions: Transaction[];
 };
 
-export function FinancialHero({ totals, transactions }: FinancialHeroProps) {
-  const monthly = getMonthlySnapshot(transactions, totals.currency);
+export function FinancialHero({
+  intelligence,
+  totals,
+}: FinancialHeroProps) {
+  const monthly = intelligence.healthScore.monthly;
   const isPositive = monthly.difference >= 0;
-  const healthScore = getHealthScore(totals, transactions, monthly);
+  const healthScore = intelligence.healthScore.score;
   const isHealthy = healthScore >= 70;
 
   return (
@@ -44,16 +49,17 @@ export function FinancialHero({ totals, transactions }: FinancialHeroProps) {
               ) : (
                 <CircleAlert className="size-3.5" />
               )}
-              Health {healthScore}
+              {intelligence.healthStatus.status}
             </span>
           </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
             {formatCurrency(totals.balance, totals.currency)}
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">
-            {isPositive
-              ? "You are keeping more money in than out this month."
-              : "Expenses are ahead of income this month. Review the flow below."}
+            {intelligence.healthStatus.explanation}
+          </p>
+          <p className="mt-3 max-w-xl text-xs leading-5 text-slate-400">
+            Next priority: {intelligence.healthStatus.nextPriority}
           </p>
         </div>
 
@@ -63,6 +69,9 @@ export function FinancialHero({ totals, transactions }: FinancialHeroProps) {
               <div>
                 <p className="text-xs text-slate-400">Financial health</p>
                 <p className="mt-2 text-3xl font-semibold">{healthScore}</p>
+                <p className="mt-1 text-sm font-medium text-slate-300">
+                  {intelligence.healthStatus.status}
+                </p>
               </div>
               <span
                 className={`flex size-10 items-center justify-center rounded-full ${
@@ -87,7 +96,7 @@ export function FinancialHero({ totals, transactions }: FinancialHeroProps) {
               />
             </div>
             <p className="mt-3 text-xs text-slate-400">
-              {isHealthy ? "Stable condition" : "Needs attention"}
+              {intelligence.healthStatus.nextPriority}
             </p>
           </div>
 
@@ -126,6 +135,27 @@ export function FinancialHero({ totals, transactions }: FinancialHeroProps) {
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="mt-6 grid gap-3 lg:grid-cols-2">
+        <article className="rounded-2xl bg-white/7 p-4 ring-1 ring-white/10">
+          <p className="text-xs text-slate-400">Current Stage</p>
+          <p className="mt-2 text-lg font-semibold">
+            {intelligence.wealthStage.stage}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-slate-300">
+            {intelligence.wealthStage.description}
+          </p>
+        </article>
+        <article className="rounded-2xl bg-white/7 p-4 ring-1 ring-white/10">
+          <p className="text-xs text-slate-400">Next Milestone</p>
+          <p className="mt-2 text-lg font-semibold">
+            {intelligence.nextMilestone.title}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-slate-300">
+            {intelligence.nextMilestone.description}
+          </p>
+        </article>
       </div>
 
       <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -176,80 +206,5 @@ function HeroMetric({
       <p className="text-xs text-slate-400">{label}</p>
       <p className="mt-2 break-words text-lg font-semibold">{value}</p>
     </article>
-  );
-}
-
-function getMonthlySnapshot(transactions: Transaction[], fallbackCurrency: string) {
-  const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
-  const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-  const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear;
-  let income = 0;
-  let expense = 0;
-  let previousDifference = 0;
-  const currency = transactions[0]?.currency ?? fallbackCurrency;
-
-  for (const transaction of transactions) {
-    const date = new Date(`${transaction.transactionDate}T00:00:00`);
-    const signedAmount =
-      transaction.category.type === "income"
-        ? transaction.amount
-        : -transaction.amount;
-
-    if (date.getMonth() === currentMonth && date.getFullYear() === currentYear) {
-      if (transaction.category.type === "income") {
-        income += transaction.amount;
-      } else {
-        expense += transaction.amount;
-      }
-    }
-
-    if (
-      date.getMonth() === previousMonth &&
-      date.getFullYear() === previousYear
-    ) {
-      previousDifference += signedAmount;
-    }
-  }
-
-  const difference = income - expense;
-  const change =
-    previousDifference === 0
-      ? null
-      : ((difference - previousDifference) / Math.abs(previousDifference)) * 100;
-  const healthPercentage =
-    income === 0 ? 0 : Math.min(Math.max((difference / income) * 100, 0), 100);
-
-  return {
-    changePercent: change === null ? "No previous month yet" : `${change >= 0 ? "+" : ""}${change.toFixed(1)}%`,
-    currency,
-    difference,
-    expense,
-    healthPercentage,
-    income,
-    savings: difference,
-  };
-}
-
-function getHealthScore(
-  totals: DashboardTotals,
-  transactions: Transaction[],
-  monthly: ReturnType<typeof getMonthlySnapshot>
-) {
-  const savingsRate =
-    monthly.income === 0 ? 0 : monthly.difference / monthly.income;
-
-  return Math.max(
-    0,
-    Math.min(
-      100,
-      Math.round(
-        55 +
-          (totals.balance >= 0 ? 15 : -15) +
-          Math.max(-20, Math.min(25, savingsRate * 100)) +
-          Math.min(10, transactions.length)
-      )
-    )
   );
 }
