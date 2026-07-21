@@ -17,7 +17,7 @@ export function CategoryList({ categories }: CategoryListProps) {
 
   if (categories.length === 0) {
     return (
-      <div className="min-w-0 rounded-lg border border-dashed border-border bg-card p-6 text-center">
+      <div className="min-w-0 rounded-2xl bg-white/70 p-6 text-center ring-1 ring-slate-900/5">
         <h2 className="text-base font-semibold">No categories yet</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Create categories before recording transactions.
@@ -27,18 +27,21 @@ export function CategoryList({ categories }: CategoryListProps) {
   }
 
   return (
-    <div className="min-w-0 rounded-lg border border-border bg-card shadow-sm">
-      <div className="border-b border-border p-5">
+    <div className="min-w-0 rounded-2xl bg-white/80 p-2 shadow-[0_18px_50px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/5">
+      <div className="px-4 pb-2 pt-3">
         <h2 className="text-base font-semibold">Category List</h2>
       </div>
 
-      <div className="divide-y divide-border">
+      <div className="space-y-2">
         {categories.map((category) => {
           const isEditing = editingId === category.id;
           const isIncome = category.type === "income";
 
           return (
-            <article key={category.id} className="p-5">
+            <article
+              key={category.id}
+              className="rounded-2xl p-3 transition-colors hover:bg-slate-50/80"
+            >
               {isEditing ? (
                 <CategoryForm
                   category={category}
@@ -82,7 +85,7 @@ export function CategoryList({ categories }: CategoryListProps) {
                       type="button"
                       variant="outline"
                       size="sm"
-                      className="w-full sm:w-auto"
+                      className="w-full bg-white/70 sm:w-auto"
                       onClick={() => setEditingId(category.id)}
                     >
                       Edit

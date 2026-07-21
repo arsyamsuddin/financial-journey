@@ -19,18 +19,20 @@ export function SummaryCards({ totals }: SummaryCardsProps) {
   ];
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1.25fr_1fr]">
-      <article className="min-w-0 rounded-lg border border-emerald-200 bg-emerald-50 p-6 shadow-sm">
-        <p className="text-sm font-medium text-emerald-700">Current Balance</p>
+    <div className="grid gap-4 lg:grid-cols-[1.35fr_0.9fr]">
+      <article className="min-w-0 overflow-hidden rounded-3xl bg-emerald-950 p-7 text-white shadow-[0_24px_70px_rgba(4,120,87,0.22)]">
+        <p className="text-sm font-medium text-emerald-100/80">
+          Current Balance
+        </p>
         <p
-          className={`mt-3 break-words text-4xl font-semibold tracking-tight ${
-            totals.balance >= 0 ? "text-emerald-950" : "text-rose-700"
+          className={`mt-4 break-words text-5xl font-semibold tracking-tight ${
+            totals.balance >= 0 ? "text-white" : "text-rose-200"
           }`}
         >
           {formatCurrency(totals.balance, totals.currency)}
         </p>
-        <p className="mt-3 text-sm leading-6 text-emerald-800">
-          Your balance is calculated from recorded income and expenses.
+        <p className="mt-4 max-w-md text-sm leading-6 text-emerald-50/75">
+          Your clearest view of what remains after recorded income and expenses.
         </p>
       </article>
 
@@ -38,11 +40,11 @@ export function SummaryCards({ totals }: SummaryCardsProps) {
         {secondaryCards.map((card) => (
           <article
             key={card.label}
-            className="min-w-0 rounded-lg border border-border bg-card p-5 shadow-sm"
+            className="min-w-0 rounded-2xl bg-white/85 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/5"
           >
             <p className="text-sm text-muted-foreground">{card.label}</p>
             <p
-              className={`mt-3 break-words text-2xl font-semibold ${card.tone}`}
+              className={`mt-3 break-words text-3xl font-semibold tracking-tight ${card.tone}`}
             >
               {card.value}
             </p>

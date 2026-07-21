@@ -16,6 +16,7 @@ import type { Category, CategoryType, Transaction } from "@/lib/transactions";
 
 type TransactionFormProps = {
   categories: Category[];
+  initialType?: CategoryType;
   mode?: "create" | "edit";
   onCancel?: () => void;
   onSuccess?: (message?: string) => void;
@@ -26,21 +27,23 @@ const initialState: TransactionFormState = {};
 
 export function TransactionForm({
   categories,
+  initialType: preferredType,
   mode = "create",
   onCancel,
   onSuccess,
   transaction,
 }: TransactionFormProps) {
-  const initialType = transaction?.category.type ?? categories[0]?.type ?? "expense";
+  const initialType =
+    transaction?.category.type ?? preferredType ?? categories[0]?.type ?? "expense";
   const [type, setType] = useState<CategoryType>(initialType);
   const action = mode === "edit" ? updateTransaction : createTransaction;
   const [state, formAction, pending] = useActionState(action, initialState);
 
   useEffect(() => {
-    if (mode === "edit" && state.success) {
+    if (state.success) {
       onSuccess?.(state.message);
     }
-  }, [mode, onSuccess, state.message, state.success]);
+  }, [onSuccess, state.message, state.success]);
 
   const filteredCategories = useMemo(
     () => categories.filter((category) => category.type === type),
@@ -54,7 +57,7 @@ export function TransactionForm({
 
   if (categories.length === 0) {
     return (
-      <div className="min-w-0 rounded-lg border border-dashed border-border bg-card p-5">
+      <div className="min-w-0 rounded-2xl bg-white/80 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/5">
         <h2 className="text-base font-semibold">Add Transaction</h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
           Create at least one category before recording transactions.
@@ -72,14 +75,14 @@ export function TransactionForm({
   return (
     <form
       action={formAction}
-      className="min-w-0 rounded-lg border border-border bg-card p-5 shadow-sm"
+      className="min-w-0 rounded-2xl bg-white/90 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/5"
     >
-      <div className="mb-5">
-        <h2 className="text-base font-semibold">
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold tracking-tight">
           {mode === "edit" ? "Edit Transaction" : "Add Transaction"}
         </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Record income and expenses with the category that best describes them.
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          Keep the record simple: type, category, amount, and date.
         </p>
       </div>
 
@@ -93,7 +96,7 @@ export function TransactionForm({
             name="type"
             value={type}
             onChange={(event) => setType(event.target.value as CategoryType)}
-            className="h-9 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm shadow-xs outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             <option value="income">Income</option>
             <option value="expense">Expense</option>
@@ -107,7 +110,7 @@ export function TransactionForm({
             id={`${mode}-category`}
             name="categoryId"
             defaultValue={defaultCategoryId}
-            className="h-9 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm shadow-xs outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             required
           >
             {filteredCategories.length > 0 ? (
@@ -128,6 +131,7 @@ export function TransactionForm({
             id={`${mode}-amount`}
             name="amount"
             type="number"
+            className="h-11 rounded-xl"
             min="0.01"
             step="0.01"
             defaultValue={transaction?.amount}
@@ -140,6 +144,7 @@ export function TransactionForm({
           <Input
             id={`${mode}-currency`}
             name="currency"
+            className="h-11 rounded-xl"
             defaultValue={transaction?.currency ?? "IDR"}
             maxLength={10}
             required
@@ -152,6 +157,7 @@ export function TransactionForm({
             id={`${mode}-date`}
             name="transactionDate"
             type="date"
+            className="h-11 rounded-xl"
             defaultValue={
               transaction?.transactionDate ?? new Date().toISOString().slice(0, 10)
             }
@@ -164,6 +170,7 @@ export function TransactionForm({
           <Textarea
             id={`${mode}-description`}
             name="description"
+            className="rounded-xl"
             defaultValue={transaction?.description ?? ""}
             placeholder="Optional details"
           />

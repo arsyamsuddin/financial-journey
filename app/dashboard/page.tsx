@@ -2,10 +2,15 @@ import { redirect } from "next/navigation";
 
 import { LogoutButton } from "@/components/auth/logout-button";
 import { CollapsibleCategoryManagement } from "@/components/categories/collapsible-category-management";
+import { AccountSummary } from "@/components/dashboard/account-card";
+import { CashFlowChart } from "@/components/dashboard/cash-flow-chart";
+import { CategoryBreakdown } from "@/components/dashboard/category-breakdown";
+import { CommunityInsights } from "@/components/dashboard/community-insights";
+import { FinancialHero } from "@/components/dashboard/financial-hero";
+import { FutureModules } from "@/components/dashboard/future-modules";
+import { QuickActionPanel } from "@/components/dashboard/quick-action-panel";
 import { FinancialInsights } from "@/components/insights/financial-insights";
-import { QuickAddTransaction } from "@/components/transactions/quick-add-transaction";
-import { SummaryCards } from "@/components/transactions/summary-cards";
-import { TransactionList } from "@/components/transactions/transaction-list";
+import { TransactionTimeline } from "@/components/transactions/transaction-timeline";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import {
   calculateDashboardTotals,
@@ -98,9 +103,9 @@ export default async function DashboardPage() {
   const insights = calculateFinancialInsights(transactions);
 
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border/70">
-        <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.14),transparent_30%),linear-gradient(180deg,#f8fafc_0%,#eef7f2_100%)] text-foreground">
+      <header className="sticky top-0 z-20 border-b border-white/70 bg-white/75 backdrop-blur-xl">
+        <nav className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           <div className="min-w-0">
             <p className="text-base font-semibold leading-none tracking-tight">
               FiJo
@@ -113,51 +118,30 @@ export default async function DashboardPage() {
         </nav>
       </header>
 
-      <section className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <section>
-          <p className="text-sm font-medium text-emerald-700">Dashboard</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-            Welcome to FiJo
-          </h1>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
-            Financial awareness before financial advice.
-          </p>
-        </section>
+      <section className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-5 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
+        <FinancialHero totals={totals} transactions={transactions} />
 
-        <section className="mt-6">
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold tracking-tight">
-              Financial Snapshot
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              See your current financial position at a glance.
-            </p>
+        <section className="grid gap-6 xl:grid-cols-[1.35fr_0.65fr] xl:items-start">
+          <div className="space-y-6">
+            <QuickActionPanel categories={categories} />
+            <CashFlowChart transactions={transactions} />
           </div>
-          <SummaryCards totals={totals} />
+          <AccountSummary totals={totals} transactions={transactions} />
         </section>
 
-        {categories.length > 0 ? (
-          <>
-            <QuickAddTransaction categories={categories} />
-
-            <section className="mt-6">
-              <div className="mb-4">
-                <h2 className="text-xl font-semibold tracking-tight">
-                  Recent Transactions
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Review your latest recorded activity.
-                </p>
-              </div>
-              <TransactionList
-                categories={categories}
-                transactions={transactions}
-              />
-            </section>
-          </>
-        ) : null}
+        <section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+          <CategoryBreakdown transactions={transactions} />
+          <TransactionTimeline
+            categories={categories}
+            transactions={transactions}
+          />
+        </section>
 
         <FinancialInsights insights={insights} />
+
+        <CommunityInsights />
+
+        <FutureModules />
 
         <CollapsibleCategoryManagement categories={categories} />
       </section>

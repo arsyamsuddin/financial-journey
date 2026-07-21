@@ -13,7 +13,7 @@ export function CategoryManagement({ categories }: CategoryManagementProps) {
   return (
     <section className="mt-4">
       <div className="mb-4">
-        <h2 className="text-xl font-semibold tracking-tight">Categories</h2>
+        <h2 className="text-lg font-semibold tracking-tight">Categories</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Manage income and expense categories used by transactions.
         </p>

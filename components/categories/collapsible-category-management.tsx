@@ -16,11 +16,11 @@ export function CollapsibleCategoryManagement({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <section id="categories" className="mt-6">
-      <div className="rounded-lg border border-border bg-card p-5 shadow-sm">
+    <section id="categories" className="mt-8">
+      <div className="rounded-2xl bg-white/60 p-5 ring-1 ring-slate-900/5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight">
+            <h2 className="text-lg font-semibold tracking-tight">
               Manage Categories
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -31,7 +31,7 @@ export function CollapsibleCategoryManagement({
             type="button"
             variant="outline"
             aria-expanded={isOpen}
-            className="h-10 w-full sm:w-auto"
+            className="h-10 w-full bg-white/70 sm:w-auto"
             onClick={() => setIsOpen((current) => !current)}
           >
             {isOpen ? "Hide Categories" : "Manage Categories"}

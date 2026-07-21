@@ -37,7 +37,7 @@ export function AuthForm({
   const [state, formAction, pending] = useActionState(action, initialState);
 
   return (
-    <div className="w-full max-w-sm rounded-lg border border-border bg-card p-6 shadow-sm">
+    <div className="w-full max-w-sm rounded-3xl bg-white/90 p-6 shadow-[0_24px_80px_rgba(15,23,42,0.10)] ring-1 ring-slate-900/5">
       <div className="mb-6">
         <Link href="/" className="inline-block">
           <span className="block text-sm font-semibold leading-none tracking-tight">
@@ -61,6 +61,7 @@ export function AuthForm({
             id="email"
             name="email"
             type="email"
+            className="h-11 rounded-xl"
             autoComplete="email"
             placeholder="you@example.com"
             required
@@ -73,6 +74,7 @@ export function AuthForm({
             id="password"
             name="password"
             type="password"
+            className="h-11 rounded-xl"
             autoComplete={passwordAutoComplete}
             required
           />

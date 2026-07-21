@@ -1,4 +1,13 @@
 import {
+  BadgeAlert,
+  CircleDollarSign,
+  ReceiptText,
+  TrendingUp,
+} from "lucide-react";
+
+import { SectionHeader } from "@/components/dashboard/section-header";
+import { InsightCard } from "@/components/insights/insight-card";
+import {
   formatCurrency,
   type FinancialInsights as FinancialInsightsData,
 } from "@/lib/transactions";
@@ -10,72 +19,69 @@ type FinancialInsightsProps = {
 export function FinancialInsights({ insights }: FinancialInsightsProps) {
   const cards = [
     {
-      label: "Highest Expense Category",
-      value: insights.highestExpenseCategory
+      description: insights.highestExpenseCategory
         ? insights.highestExpenseCategory.name
-        : "No expenses yet",
-      detail: insights.highestExpenseCategory
+        : "Record an expense to see where your money is going.",
+      icon: BadgeAlert,
+      label: "Spending Alert",
+      title: insights.highestExpenseCategory
         ? formatCurrency(
             insights.highestExpenseCategory.total,
             insights.currency
           )
-        : "Record an expense to see this insight.",
+        : "No expenses yet",
+      tone: "rose" as const,
     },
     {
-      label: "Highest Income Category",
-      value: insights.highestIncomeCategory
+      description: insights.highestIncomeCategory
         ? insights.highestIncomeCategory.name
-        : "No income yet",
-      detail: insights.highestIncomeCategory
+        : "Record income to understand your strongest inflow.",
+      icon: TrendingUp,
+      label: "Income Growth",
+      title: insights.highestIncomeCategory
         ? formatCurrency(insights.highestIncomeCategory.total, insights.currency)
-        : "Record income to see this insight.",
+        : "No income yet",
+      tone: "emerald" as const,
     },
     {
-      label: "Total Transactions This Month",
-      value: String(insights.totalTransactionsThisMonth),
-      detail:
+      description:
         insights.totalTransactionsThisMonth === 0
           ? "No transactions recorded this month."
-          : "Transactions recorded in the current month.",
+          : "Your records are building a clearer monthly picture.",
+      icon: ReceiptText,
+      label: "Monthly Summary",
+      title: `${insights.totalTransactionsThisMonth} transactions`,
+      tone: "sky" as const,
     },
     {
-      label: "Average Expense Transaction",
-      value:
+      description:
+        insights.averageExpenseTransaction === null
+          ? "Record an expense to calculate your baseline."
+          : "Use this as a quick reference before adding a new expense.",
+      icon: CircleDollarSign,
+      label: "Spending Baseline",
+      title:
         insights.averageExpenseTransaction === null
           ? "No expenses yet"
-          : formatCurrency(insights.averageExpenseTransaction, insights.currency),
-      detail:
-        insights.averageExpenseTransaction === null
-          ? "Record an expense to calculate the average."
-          : "Average amount across expense transactions.",
+          : formatCurrency(
+              insights.averageExpenseTransaction,
+              insights.currency
+            ),
+      tone: "amber" as const,
     },
   ];
 
   return (
-    <section className="mt-6">
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold tracking-tight">
-          FiJo Insights
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          A quick read on your recorded transaction patterns.
-        </p>
-      </div>
+    <section className="space-y-4">
+      <SectionHeader
+        description="Clear signals that turn your records into financial awareness."
+        eyebrow="Smart Insights"
+        title="FiJo Insights"
+      />
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2">
         {cards.map((card) => (
-          <article
-            key={card.label}
-            className="min-w-0 rounded-lg border border-border bg-card p-5 shadow-sm"
-          >
-            <p className="text-sm text-muted-foreground">{card.label}</p>
-            <p className="mt-3 break-words text-xl font-semibold">
-              {card.value}
-            </p>
-            <p className="mt-2 break-words text-sm leading-6 text-muted-foreground">
-              {card.detail}
-            </p>
-          </article>
+          <InsightCard key={card.label} {...card} />
         ))}
       </div>
     </section>

@@ -61,7 +61,7 @@ export function CategoryForm({
   return (
     <form
       action={formAction}
-      className="min-w-0 rounded-lg border border-border bg-card p-5 shadow-sm"
+      className="min-w-0 rounded-2xl bg-white/85 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/5"
     >
       <div className="mb-5">
         <h2 className="text-base font-semibold">
@@ -94,7 +94,7 @@ export function CategoryForm({
                   CUSTOM_CATEGORY_KEY
               );
             }}
-            className="h-9 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm shadow-xs outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             <option value="income">Income</option>
             <option value="expense">Expense</option>
@@ -107,7 +107,7 @@ export function CategoryForm({
             id={`${mode}-category-preset`}
             value={presetKey}
             onChange={(event) => setPresetKey(event.target.value)}
-            className="h-9 w-full rounded-lg border border-input bg-background px-3 text-sm shadow-xs outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm shadow-xs outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             {presets.map((preset) => (
               <option key={preset.key} value={preset.key}>
@@ -124,6 +124,7 @@ export function CategoryForm({
             <Input
               id={`${mode}-category-name`}
               name="name"
+              className="h-11 rounded-xl"
               defaultValue={category && !matchedPreset ? category.name : ""}
               placeholder="Category name"
               required
@@ -131,7 +132,7 @@ export function CategoryForm({
           </div>
         ) : null}
 
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/35 p-3">
+        <div className="flex items-center gap-3 rounded-2xl bg-emerald-50/60 p-3 ring-1 ring-emerald-900/5">
           <CategoryIcon color={selectedColor} icon={selectedIcon} />
           <div className="min-w-0">
             <p className="break-words text-sm font-medium">

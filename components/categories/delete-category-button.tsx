@@ -21,9 +21,9 @@ export function DeleteCategoryButton({ categoryId }: { categoryId: string }) {
       <input type="hidden" name="id" value={categoryId} />
       <Button
         type="submit"
-        variant="destructive"
+        variant="ghost"
         size="sm"
-        className="w-full sm:w-auto"
+        className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive sm:w-auto"
         disabled={pending}
       >
         {pending ? "Deleting..." : "Delete"}

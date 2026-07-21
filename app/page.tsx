@@ -28,8 +28,8 @@ const features = [
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border/70">
+    <main className="min-h-screen bg-[oklch(0.985_0.012_170)] text-foreground">
+      <header className="border-b border-white/70 bg-white/80 backdrop-blur">
         <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
@@ -66,9 +66,9 @@ export default function HomePage() {
 
       <section
         id="about"
-        className="mx-auto grid w-full max-w-6xl gap-12 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24"
+        className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-20"
       >
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col justify-center rounded-3xl bg-white/70 p-6 shadow-[0_20px_70px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/5 sm:p-8 lg:bg-transparent lg:p-0 lg:shadow-none lg:ring-0">
           <p className="mb-4 text-sm font-medium text-emerald-700">
             Financial Journey
           </p>
@@ -106,7 +106,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="min-w-0 rounded-lg border border-border bg-card p-5 shadow-sm shadow-emerald-950/5">
+        <div className="min-w-0 rounded-3xl bg-white/85 p-5 shadow-[0_20px_70px_rgba(15,23,42,0.08)] ring-1 ring-slate-900/5">
           <div className="flex flex-col gap-3 border-b border-border pb-4 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
             <div className="min-w-0">
               <p className="text-sm text-muted-foreground">Monthly view</p>
@@ -125,7 +125,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="features" className="border-y border-border/70 bg-muted/35">
+      <section id="features" className="bg-white/60">
         <div className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
           <div className="max-w-2xl">
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
@@ -188,7 +188,7 @@ function FeatureCard({
   icon: ComponentType<{ className?: string }>;
 }) {
   return (
-    <article className="rounded-lg border border-border bg-card p-5 shadow-sm shadow-emerald-950/5">
+    <article className="rounded-2xl bg-white/85 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)] ring-1 ring-slate-900/5">
       <div className="mb-5 flex size-10 items-center justify-center rounded-md bg-emerald-50 text-emerald-700">
         <Icon className="size-5" />
       </div>

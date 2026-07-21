@@ -15,7 +15,7 @@ export default async function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-muted/35 px-4 py-12">
+    <main className="flex min-h-screen items-center justify-center bg-[oklch(0.985_0.012_170)] px-4 py-12">
       <AuthForm
         action={register}
         alternateHref="/login"
