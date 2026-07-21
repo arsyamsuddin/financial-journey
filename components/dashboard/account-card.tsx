@@ -5,6 +5,7 @@ import {
   Wallet,
   type LucideIcon,
 } from "lucide-react";
+import Link from "next/link";
 
 import { SectionHeader } from "@/components/dashboard/section-header";
 import {
@@ -14,6 +15,8 @@ import {
 } from "@/lib/transactions";
 
 type AccountSummaryProps = {
+  limit?: number;
+  showViewAll?: boolean;
   totals: DashboardTotals;
   transactions: Transaction[];
 };
@@ -25,17 +28,31 @@ const accountTemplates = [
   { icon: CreditCard, label: "Credit Card", tone: "bg-rose-50 text-rose-700" },
 ];
 
-export function AccountSummary({ totals, transactions }: AccountSummaryProps) {
+export function AccountSummary({
+  limit,
+  showViewAll = false,
+  totals,
+  transactions,
+}: AccountSummaryProps) {
+  const accounts = typeof limit === "number" ? accountTemplates.slice(0, limit) : accountTemplates;
+
   return (
     <section className="space-y-4">
       <SectionHeader
         description="Prepared for multiple account types as FiJo grows."
         eyebrow="Accounts"
+        meta={
+          showViewAll ? (
+            <Link href="/accounts" className="text-emerald-700 hover:text-emerald-800">
+              View All
+            </Link>
+          ) : null
+        }
         title="Account summary"
       />
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-        {accountTemplates.map((account, index) => (
+        {accounts.map((account, index) => (
           <AccountCard
             key={account.label}
             balance={index === 0 ? totals.balance : 0}

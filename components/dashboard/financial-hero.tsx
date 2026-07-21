@@ -1,4 +1,10 @@
-import { ArrowDownRight, ArrowUpRight, Minus, TrendingUp } from "lucide-react";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  CheckCircle2,
+  CircleAlert,
+  TrendingUp,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
 import {
@@ -15,14 +21,32 @@ type FinancialHeroProps = {
 export function FinancialHero({ totals, transactions }: FinancialHeroProps) {
   const monthly = getMonthlySnapshot(transactions, totals.currency);
   const isPositive = monthly.difference >= 0;
+  const healthScore = getHealthScore(totals, transactions, monthly);
+  const isHealthy = healthScore >= 70;
 
   return (
-    <section className="rounded-[2rem] bg-slate-950 p-5 text-white shadow-[0_30px_80px_rgba(15,23,42,0.18)] sm:p-7 lg:p-8">
-      <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr] lg:items-end">
+    <section className="rounded-[2rem] bg-slate-950 p-5 text-white shadow-[0_30px_80px_rgba(15,23,42,0.18)] sm:p-6 lg:p-8">
+      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr] xl:items-stretch">
         <div className="min-w-0">
-          <p className="text-sm font-medium text-emerald-200">
-            Financial Overview
-          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            <p className="text-sm font-medium text-emerald-200">
+              Financial snapshot
+            </p>
+            <span
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
+                isHealthy
+                  ? "bg-emerald-400/15 text-emerald-100"
+                  : "bg-amber-400/15 text-amber-100"
+              }`}
+            >
+              {isHealthy ? (
+                <CheckCircle2 className="size-3.5" />
+              ) : (
+                <CircleAlert className="size-3.5" />
+              )}
+              Health {healthScore}
+            </span>
+          </div>
           <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
             {formatCurrency(totals.balance, totals.currency)}
           </h1>
@@ -33,21 +57,56 @@ export function FinancialHero({ totals, transactions }: FinancialHeroProps) {
           </p>
         </div>
 
-        <div className="rounded-3xl bg-white/8 p-4 ring-1 ring-white/10">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-xs uppercase tracking-[0.16em] text-slate-400">
-                Monthly Difference
-              </p>
-              <p
-                className={`mt-2 text-2xl font-semibold ${
-                  isPositive ? "text-emerald-200" : "text-rose-200"
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl bg-white/8 p-4 ring-1 ring-white/10">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs text-slate-400">Financial health</p>
+                <p className="mt-2 text-3xl font-semibold">{healthScore}</p>
+              </div>
+              <span
+                className={`flex size-10 items-center justify-center rounded-full ${
+                  isHealthy
+                    ? "bg-emerald-400/15 text-emerald-200"
+                    : "bg-amber-400/15 text-amber-200"
                 }`}
               >
-                {isPositive ? "+" : "-"}
-                {formatCurrency(Math.abs(monthly.difference), monthly.currency)}
-              </p>
+                {isHealthy ? (
+                  <CheckCircle2 className="size-5" />
+                ) : (
+                  <CircleAlert className="size-5" />
+                )}
+              </span>
             </div>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+              <div
+                className={`h-full rounded-full ${
+                  isHealthy ? "bg-emerald-300" : "bg-amber-300"
+                }`}
+                style={{ width: `${healthScore}%` }}
+              />
+            </div>
+            <p className="mt-3 text-xs text-slate-400">
+              {isHealthy ? "Stable condition" : "Needs attention"}
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-white/8 p-4 ring-1 ring-white/10">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs text-slate-400">Monthly difference</p>
+                <p
+                  className={`mt-2 text-2xl font-semibold ${
+                    isPositive ? "text-emerald-200" : "text-rose-200"
+                  }`}
+                >
+                  {isPositive ? "+" : "-"}
+                  {formatCurrency(
+                    Math.abs(monthly.difference),
+                    monthly.currency
+                  )}
+                </p>
+              </div>
             <span
               className={`flex size-11 items-center justify-center rounded-full ${
                 isPositive
@@ -61,20 +120,15 @@ export function FinancialHero({ totals, transactions }: FinancialHeroProps) {
                 <ArrowDownRight className="size-5" />
               )}
             </span>
+            </div>
+            <p className="mt-4 text-xs text-slate-400">
+              Monthly change: {monthly.changePercent}
+            </p>
           </div>
-          <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
-            <div
-              className="h-full rounded-full bg-emerald-300"
-              style={{ width: `${monthly.healthPercentage}%` }}
-            />
-          </div>
-          <p className="mt-3 text-xs text-slate-400">
-            Monthly change: {monthly.changePercent}
-          </p>
         </div>
       </div>
 
-      <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
         <HeroMetric
           icon={<ArrowUpRight className="size-4" />}
           label="Monthly Income"
@@ -93,12 +147,6 @@ export function FinancialHero({ totals, transactions }: FinancialHeroProps) {
           tone={monthly.savings >= 0 ? "income" : "expense"}
           value={formatCurrency(monthly.savings, monthly.currency)}
         />
-        <HeroMetric
-          icon={<Minus className="size-4" />}
-          label="All-time Balance"
-          tone="neutral"
-          value={formatCurrency(totals.balance, totals.currency)}
-        />
       </div>
     </section>
   );
@@ -112,15 +160,13 @@ function HeroMetric({
 }: {
   icon: ReactNode;
   label: string;
-  tone: "expense" | "income" | "neutral";
+  tone: "expense" | "income";
   value: string;
 }) {
   const toneClass =
     tone === "income"
       ? "text-emerald-200"
-      : tone === "expense"
-        ? "text-rose-200"
-        : "text-slate-200";
+      : "text-rose-200";
 
   return (
     <article className="rounded-2xl bg-white/7 p-4 ring-1 ring-white/10">
@@ -184,4 +230,26 @@ function getMonthlySnapshot(transactions: Transaction[], fallbackCurrency: strin
     income,
     savings: difference,
   };
+}
+
+function getHealthScore(
+  totals: DashboardTotals,
+  transactions: Transaction[],
+  monthly: ReturnType<typeof getMonthlySnapshot>
+) {
+  const savingsRate =
+    monthly.income === 0 ? 0 : monthly.difference / monthly.income;
+
+  return Math.max(
+    0,
+    Math.min(
+      100,
+      Math.round(
+        55 +
+          (totals.balance >= 0 ? 15 : -15) +
+          Math.max(-20, Math.min(25, savingsRate * 100)) +
+          Math.min(10, transactions.length)
+      )
+    )
+  );
 }

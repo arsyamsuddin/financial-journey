@@ -14,9 +14,10 @@ import {
 
 type FinancialInsightsProps = {
   insights: FinancialInsightsData;
+  limit?: number;
 };
 
-export function FinancialInsights({ insights }: FinancialInsightsProps) {
+export function FinancialInsights({ insights, limit }: FinancialInsightsProps) {
   const cards = [
     {
       description: insights.highestExpenseCategory
@@ -80,7 +81,7 @@ export function FinancialInsights({ insights }: FinancialInsightsProps) {
       />
 
       <div className="grid gap-4 md:grid-cols-2">
-        {cards.map((card) => (
+        {cards.slice(0, limit).map((card) => (
           <InsightCard key={card.label} {...card} />
         ))}
       </div>

@@ -27,7 +27,11 @@ const communityInsights = [
   },
 ];
 
-export function CommunityInsights() {
+type CommunityInsightsProps = {
+  limit?: number;
+};
+
+export function CommunityInsights({ limit }: CommunityInsightsProps) {
   return (
     <section className="space-y-4">
       <SectionHeader
@@ -37,7 +41,7 @@ export function CommunityInsights() {
       />
 
       <div className="grid gap-4 md:grid-cols-3">
-        {communityInsights.map((insight) => (
+        {communityInsights.slice(0, limit).map((insight) => (
           <CommunityInsightCard key={insight.label} {...insight} />
         ))}
       </div>
